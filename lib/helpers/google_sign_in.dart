@@ -6,8 +6,12 @@ import '../objs/login_result.dart';
 
 class GoogleSignInHelper {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
-  static final GoogleSignIn googleSignIn = GoogleSignIn(
-      scopes: [CalendarApi.CalendarEventsScope, CalendarApi.CalendarScope]);
+  static final GoogleSignIn googleSignIn = GoogleSignIn(scopes: [
+    'profile',
+    'email',
+    CalendarApi.CalendarEventsScope,
+    CalendarApi.CalendarScope
+  ]);
 
   Future<LoginResult> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
