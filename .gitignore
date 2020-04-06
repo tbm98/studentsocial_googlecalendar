@@ -39,3 +39,4 @@ lib/generated_plugin_registrant.dart
 # Ignore private file
 
 android/app/google-services.json
+android/key.properties
