@@ -20,15 +20,18 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 import java.io.File
 import java.io.FileInputStream
+import android.content.ContextWrapper
+import android.content.IntentFilter
+import java.security.cert.Extension
 
 
 class MainActivity : FlutterActivity() {
 
-    var call: MethodCall? = null
-    var result: MethodChannel.Result? = null
+    private lateinit var call: MethodCall
+    private lateinit var result: MethodChannel.Result
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-        GeneratedPluginRegistrant.registerWith(flutterEngine);
+        GeneratedPluginRegistrant.registerWith(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             this.call = call
             this.result = result
@@ -41,10 +44,10 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun runMethod() {
-        if (call?.method == "pickerFile") {
+        if (call.method == "pickerFile") {
             browseClick()
         } else {
-            result?.notImplemented()
+            result.notImplemented()
         }
     }
 
@@ -119,17 +122,19 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        var fileName: String = ""
+        val fileName: String?
+
 
         if (requestCode == 1) {
+
             if (resultCode == RESULT_OK) {
                 try {
-                    val uri = data.data
-                    val mimeType = contentResolver.getType(uri)
+                    val uri = data?.data
+                    val mimeType = contentResolver.getType(uri!!)
                     if (mimeType == null) {
-                        val path: String = getPath(this, uri)
+                        val path: String? = getPath(this, uri)
                         Log.e("URI", uri.toString())
                         if (path == null) { //filename = FilenameUtils.getName(uri.toString());
                             fileName = "null" //FilenameUtils.getName(uri.toString());
@@ -139,15 +144,15 @@ class MainActivity : FlutterActivity() {
                         }
                     } else {
                         val returnUri = data.data
-                        val returnCursor = contentResolver.query(returnUri, null, null, null, null)
-                        val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                        val sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE)
-                        returnCursor.moveToFirst()
-                        fileName = returnCursor.getString(nameIndex)
-                        val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
+                        val returnCursor = contentResolver.query(returnUri!!, null, null, null, null)
+                        val nameIndex = returnCursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                        val sizeIndex = returnCursor?.getColumnIndex(OpenableColumns.SIZE)
+                        returnCursor?.moveToFirst()
+                        fileName = returnCursor?.getString(nameIndex!!)
+                        val size = returnCursor?.getLong(sizeIndex!!).toString()
                     }
                     val fileSave = getExternalFilesDir(null)
-                    val sourcePath = getExternalFilesDir(null).toString()
+                    val sourcePath = getExternalFilesDir(null)?.toString()
                     try {
                         copyFileStream(File("$sourcePath/$fileName"), uri, this)
                     } catch (e: java.lang.Exception) {
@@ -157,12 +162,12 @@ class MainActivity : FlutterActivity() {
 
 
                     val file = File("$sourcePath/$fileName")
-                    val stringResult = XLSReader.readExcelFile(FileInputStream(file));
+                    val stringResult = XLSReader.readExcelFile(FileInputStream(file))
 
-                    result?.success(stringResult)
+                    result.success(stringResult)
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
-                    result?.error("UNAVAILABLE", "Pick file error.", null)
+                    result.error("UNAVAILABLE", "Pick file error.", null)
                 }
             }
         }

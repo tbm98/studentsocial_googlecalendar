@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import 'helpers/calendar_service_communicate.dart';
 import 'helpers/google_http_client.dart';
 import 'helpers/google_sign_in.dart';
@@ -22,6 +23,12 @@ class MainController with ChangeNotifier {
   String avatarUrl = '';
   LoginResult loginResult;
   List<EventStudentSocial> events = [];
+  VoidCallback _showInfor;
+
+  /// set callback to show confirm information before import excel file
+  void setShowInforCallback(VoidCallback callback) {
+    _showInfor = callback;
+  }
 
   void loginDone(LoginResult result) {
     loginResult = result;
@@ -32,7 +39,7 @@ class MainController with ChangeNotifier {
     if (stateAction == StateAction.notLogin) {
       loginAction();
     } else if (stateAction == StateAction.logined) {
-      importAction();
+      _showInfor();
     } else if (stateAction == StateAction.imported) {
       uploadAction();
     }
@@ -52,8 +59,6 @@ class MainController with ChangeNotifier {
   }
 
   void importAction() async {
-    loading = true;
-    notifyListeners();
     final result = await methodChannelHelper.pickerFile();
     logs(result);
     loading = false;

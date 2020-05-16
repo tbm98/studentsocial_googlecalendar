@@ -50,12 +50,12 @@ class SignInButton extends StatelessWidget {
   Widget notLogin() {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
+      children: const <Widget>[
         Icon(
           Icons.account_circle,
           color: Colors.white,
         ),
-        const SizedBox(
+        SizedBox(
           width: 4,
         ),
         Text(
@@ -69,12 +69,12 @@ class SignInButton extends StatelessWidget {
   Widget logined() {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
+      children: const <Widget>[
         Icon(
           Icons.add,
           color: Colors.white,
         ),
-        const SizedBox(
+        SizedBox(
           width: 4,
         ),
         Text(
@@ -88,12 +88,12 @@ class SignInButton extends StatelessWidget {
   Widget imported() {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
+      children: const <Widget>[
         Icon(
           Icons.file_upload,
           color: Colors.white,
         ),
-        const SizedBox(
+        SizedBox(
           width: 4,
         ),
         Text(
@@ -107,12 +107,12 @@ class SignInButton extends StatelessWidget {
   Widget uploaded() {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
+      children: const <Widget>[
         Icon(
           Icons.sentiment_satisfied,
           color: Colors.white,
         ),
-        const SizedBox(
+        SizedBox(
           width: 4,
         ),
         Text(
